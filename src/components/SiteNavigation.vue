@@ -19,6 +19,8 @@
         <a
           href="javascript: void(0)"
           class="duration-150 hover:text-weather-secondary"
+          @click="addCity"
+          v-if="route.query.preview"
         >
           <i class="fa-solid fa-plus"></i>
         </a>
@@ -60,12 +62,43 @@
 </template>
 
 <script setup>
+import { uid } from "uid";
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import BaseModal from "./BaseModal.vue";
 
-const modalActive = ref(false);
+const savedCities = ref([]);
+const route = useRoute();
+const router = useRouter();
+const addCity = () => {
+  const localStorageSavedCities = localStorage.getItem("savedCities");
 
+  if (localStorageSavedCities) {
+    savedCities.value = JSON.parse(localStorageSavedCities);
+  }
+
+  const { state, city } = route.params;
+  const { lat, lng } = route.query;
+  const locationObj = {
+    id: uid(),
+    state,
+    city,
+    coords: {
+      lat,
+      lng,
+    },
+  };
+
+  savedCities.value.push(locationObj);
+  localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+
+  // or Object.assign({}, route.query);
+  const query = {...route.query};
+  delete query.preview;
+  router.replace({ query })
+};
+
+const modalActive = ref(false);
 const toggleModal = () => {
   modalActive.value = !modalActive.value;
 };
