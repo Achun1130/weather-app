@@ -45,7 +45,7 @@ await getCities();
 
 const router = useRouter();
 const goToCityView = (el) => {
-  const { city, state, coords } = el;
+  const { city, state, coords, id } = el;
   const { lng, lat } = coords;
 
   router.push({
@@ -57,6 +57,7 @@ const goToCityView = (el) => {
     query: {
       lat,
       lng,
+      id
     },
   });
 };

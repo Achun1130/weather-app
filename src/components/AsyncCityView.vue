@@ -1,7 +1,10 @@
 <template>
   <div class="flex flex-col items-center text-white">
     <!-- Banner -->
-    <div class="w-full bg-weather-secondary p-4 text-center" v-if="route.query.preview">
+    <div
+      class="w-full bg-weather-secondary p-4 text-center"
+      v-if="route.query.preview"
+    >
       <p>
         You are currently previewing this city, click the "+" icon to start
         tracking this city.
@@ -64,12 +67,12 @@
       <div class="mx-8">
         <h2 class="mb-4">1週預報</h2>
         <div
-          v-for="day, i in weatherData.daily"
+          v-for="(day, i) in weatherData.daily"
           :key="day.dt"
-          class="flex items-center gap-4 justify-between"
+          class="flex items-center justify-between gap-4"
         >
           <p>
-            {{ i === 0 ? '今天' : transWeek(day.dt * 1000) }}
+            {{ i === 0 ? "今天" : transWeek(day.dt * 1000) }}
           </p>
           <img
             class="h-[50px]"
@@ -87,12 +90,21 @@
         </div>
       </div>
     </div>
+
+    <div
+      class="flex cursor-pointer items-center gap-2 py-12 duration-150 hover:text-red-500"
+      @click="removeCity"
+      v-if="!route.query.preview"
+    >
+      <i class="fa-solid fa-trash"></i>
+      <p>Remove City</p>
+    </div>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 
@@ -130,6 +142,19 @@ const getWeatherData = async () => {
 };
 
 const weatherData = await getWeatherData();
+
+const router = useRouter();
+
+const removeCity = () => {
+  const cities = JSON.parse(localStorage.getItem("savedCities"));
+  // const index = cities.findIndex((city) => city.id === route.query.id);
+  // cities.splice(index, 1);
+  const updatedCity = cities.filter((city) => city.id !== route.query.id);
+  localStorage.setItem("savedCities", JSON.stringify(updatedCity));
+  router.push({
+    name: "home",
+  });
+};
 
 const transDate = (currentTime) =>
   new Date(currentTime).toLocaleDateString("zh-Hant-TW", {
