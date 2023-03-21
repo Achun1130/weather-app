@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center text-white">
     <!-- Banner -->
-    <div class="w-full bg-weather-secondary p-4 text-center" v-if="preview">
+    <div class="w-full bg-weather-secondary p-4 text-center" v-if="route.query.preview">
       <p>
         You are currently previewing this city, click the "+" icon to start
         tracking this city.
@@ -10,7 +10,7 @@
 
     <!-- Weather Overview -->
     <div class="flex flex-col items-center py-12">
-      <h1 class="mb-2 text-4xl">{{ city }}</h1>
+      <h1 class="mb-2 text-4xl">{{ route.params.city }}</h1>
       <p class="mb-12 text-sm">
         {{ transDate(weatherData.currentTime) }}
         {{ transTime(weatherData.currentTime) }}
@@ -95,10 +95,10 @@ import axios from "axios";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const { lat, lng, preview } = route.query;
-const { city } = route.params;
 
 const getWeatherData = async () => {
+  const { lat, lng } = route.query;
+
   try {
     const weatherData = await axios.get(
       `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&appid=7efa332cf48aeb9d2d391a51027f1a71&units=metric&lang=zh_tw&exclude=minutely`
