@@ -6,7 +6,9 @@
     @click="goToCityView(city)"
   />
 
-  <p v-if="savedCities.length === 0">No locations added. To start tracking a location, search in the field above.</p>
+  <p v-if="savedCities.length === 0">
+    No locations added. To start tracking a location, search in the field above.
+  </p>
 </template>
 
 <script setup>
@@ -35,6 +37,10 @@ const getCities = async () => {
   });
 
   const weatherData = await Promise.all(requests);
+
+  // loading 速度太快，為增加使用者體驗（看到 skeleton），先等一秒
+  await new Promise((res) => setTimeout(res, 1000));
+
   // 將API 取得資料併入現有資料
   weatherData.forEach((value, index) => {
     savedCities.value[index].weather = value.data;
@@ -57,7 +63,7 @@ const goToCityView = (el) => {
     query: {
       lat,
       lng,
-      id
+      id,
     },
   });
 };
