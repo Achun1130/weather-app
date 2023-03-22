@@ -38,8 +38,8 @@ const getCities = async () => {
 
   const weatherData = await Promise.all(requests);
 
-  // loading 速度太快，為增加使用者體驗（看到 skeleton），先等一秒
-  await new Promise((res) => setTimeout(res, 1000));
+  // loading 速度太快，為增加使用者體驗（看到 skeleton），先等 600 毫秒
+  await new Promise((res) => setTimeout(res, 600));
 
   // 將API 取得資料併入現有資料
   weatherData.forEach((value, index) => {
